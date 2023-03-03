@@ -1,10 +1,10 @@
 package com.example.note.controller;
 
 import com.example.note.dto.ProductDto;
+import com.example.note.dto.ResponseDto;
 import com.example.note.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +22,8 @@ public class ProductController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAllProduct() {
-        return ResponseEntity.ok(productService.getAllProduct());
+    public ResponseDto<List<ProductDto>> getAllProduct() {
+        return ResponseDto.ok(productService.getAllProduct());
     }
 
     /**
@@ -33,8 +33,8 @@ public class ProductController {
      * @return
      */
     @GetMapping(path = "/{name}")
-    public ResponseEntity<ProductDto> getProductByName(@PathVariable(name = "name") String name) {
-        return ResponseEntity.ok(productService.getProductByName(name));
+    public ResponseDto<ProductDto> getProductByName(@PathVariable(name = "name") String name) {
+        return ResponseDto.ok(productService.getProductByName(name));
     }
 
     /**
@@ -44,8 +44,8 @@ public class ProductController {
      * @return
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto) {
-        return ResponseEntity.ok(productService.addProduct(productDto));
+    public ResponseDto<ProductDto> addProduct(@RequestBody ProductDto productDto) {
+        return ResponseDto.ok(productService.addProduct(productDto));
     }
 
     /**
@@ -55,8 +55,8 @@ public class ProductController {
      * @return
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDto> editProduct(@RequestBody ProductDto productDto) {
-        return ResponseEntity.ok(productService.editProduct(productDto));
+    public ResponseDto<ProductDto> editProduct(@RequestBody ProductDto productDto) {
+        return ResponseDto.ok(productService.editProduct(productDto));
     }
 
     /**
@@ -68,8 +68,8 @@ public class ProductController {
     @PutMapping(path = "/stock",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDto> editProductStock(@RequestBody ProductDto productDto) {
-        return ResponseEntity.ok(productService.editProductStock(productDto));
+    public ResponseDto<ProductDto> editProductStock(@RequestBody ProductDto productDto) {
+        return ResponseDto.ok(productService.editProductStock(productDto));
     }
 
     /**
@@ -81,8 +81,8 @@ public class ProductController {
     @PutMapping(path = "/status",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDto> editProductStatus(@RequestBody ProductDto productDto) {
-        return ResponseEntity.ok(productService.editProductStatus(productDto));
+    public ResponseDto<ProductDto> editProductStatus(@RequestBody ProductDto productDto) {
+        return ResponseDto.ok(productService.editProductStatus(productDto));
     }
 
     /**
@@ -91,10 +91,10 @@ public class ProductController {
      * @param name
      */
     @DeleteMapping(path = "/{name}")
-    public ResponseEntity removeProduct(@PathVariable(name = "name") String name) {
+    public ResponseDto removeProduct(@PathVariable(name = "name") String name) {
         productService.removeProduct(name);
 
-        return ResponseEntity.ok(null);
+        return ResponseDto.ok(null);
     }
 
 }

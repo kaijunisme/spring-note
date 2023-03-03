@@ -1,6 +1,8 @@
 package com.example.note.service;
 
 import com.example.note.dto.ProductDto;
+import com.example.note.enumeration.ReturnCode;
+import com.example.note.error.NoteException;
 import com.example.note.po.ProductPo;
 import com.example.note.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +43,7 @@ public class ProductService {
     public ProductDto getProductByName(final String name) {
         return productRepository.findByName(name)
                 .map(ProductDto::createByPo)
-                .orElseThrow(() -> new RuntimeException("查無相關Product 資料"));
+                .orElseThrow(() -> new NoteException(ReturnCode.PRODUCT_NOT_FOUND));
     }
 
     /**
@@ -53,7 +55,7 @@ public class ProductService {
     @Transactional
     public ProductDto addProduct(ProductDto productDto) {
         if (productRepository.findByName(productDto.getName()).isPresent())
-            throw new RuntimeException("已有相同名稱之Product 資料");
+            throw new NoteException(ReturnCode.PRODUCT_NAME_DUPLICATE);
 
         ProductPo productPo = productRepository.save(productDto.getPo());
         return ProductDto.createByPo(productPo);
@@ -70,7 +72,7 @@ public class ProductService {
         return this.updateProduct(
                 () -> {
                     return productRepository.findByName(productDto.getName())
-                            .orElseThrow(() -> new RuntimeException("查無相關Product 資料"));
+                            .orElseThrow(() -> new NoteException(ReturnCode.PRODUCT_NOT_FOUND));
                 },
                 po -> {
                     if (null != productDto.getStock())
@@ -96,7 +98,7 @@ public class ProductService {
         return this.updateProduct(
                 () -> {
                     return productRepository.findByName(productDto.getName())
-                            .orElseThrow(() -> new RuntimeException("查無相關Product 資料"));
+                            .orElseThrow(() -> new NoteException(ReturnCode.PRODUCT_NOT_FOUND));
                 },
                 po -> {
                     if (null != productDto.getStock())
@@ -116,7 +118,7 @@ public class ProductService {
         return this.updateProduct(
                 () -> {
                     return productRepository.findByName(productDto.getName())
-                            .orElseThrow(() -> new RuntimeException("查無相關Product 資料"));
+                            .orElseThrow(() -> new NoteException(ReturnCode.PRODUCT_NOT_FOUND));
                 },
                 po -> {
                     if (null != productDto.getStatus())
@@ -148,7 +150,7 @@ public class ProductService {
     @Transactional
     public void removeProduct(final String name) {
         if (productRepository.findByName(name).isEmpty())
-            throw new RuntimeException("查無相關Product 資料");
+            throw new NoteException(ReturnCode.PRODUCT_NOT_FOUND);
 
         productRepository.deleteByName(name);
     }
