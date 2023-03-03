@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<ProductPo, Integer> {
 
-    public Optional<ProductPo> findByName(String name);
+    Optional<ProductPo> findByName(String name);
 
-    public void deleteByName(String name);
+    void deleteByName(String name);
 
 }
