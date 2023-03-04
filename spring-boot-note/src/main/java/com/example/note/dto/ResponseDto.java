@@ -64,4 +64,19 @@ public class ResponseDto<T> {
         return dto;
     }
 
+    /**
+     * 根據傳入資料設定回應物件內容
+     *
+     * @param returnCode
+     * @return
+     */
+    public static <T> ResponseDto<T> of(ReturnCode returnCode, String returnMsg, T data) {
+        ResponseDto<T> dto = new ResponseDto<T>();
+        dto.setReturnCode(returnCode.getCode());
+        dto.setReturnMsg(returnMsg);
+        dto.setData(data);
+
+        return dto;
+    }
+
 }

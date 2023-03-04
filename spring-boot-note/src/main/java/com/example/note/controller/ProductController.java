@@ -5,6 +5,7 @@ import com.example.note.dto.ResponseDto;
 import com.example.note.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class ProductController {
      * @return
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDto<ProductDto> addProduct(@RequestBody ProductDto productDto) {
+    public ResponseDto<ProductDto> addProduct(@Validated(ProductDto.CreateProductAction.class) @RequestBody ProductDto productDto) {
         return ResponseDto.ok(productService.addProduct(productDto));
     }
 
@@ -55,7 +56,7 @@ public class ProductController {
      * @return
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDto<ProductDto> editProduct(@RequestBody ProductDto productDto) {
+    public ResponseDto<ProductDto> editProduct(@Validated(ProductDto.UpdateProductAction.class) @RequestBody ProductDto productDto) {
         return ResponseDto.ok(productService.editProduct(productDto));
     }
 
@@ -68,7 +69,7 @@ public class ProductController {
     @PutMapping(path = "/stock",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDto<ProductDto> editProductStock(@RequestBody ProductDto productDto) {
+    public ResponseDto<ProductDto> editProductStock(@Validated(ProductDto.UpdateProductStockAction.class) @RequestBody ProductDto productDto) {
         return ResponseDto.ok(productService.editProductStock(productDto));
     }
 
@@ -81,7 +82,7 @@ public class ProductController {
     @PutMapping(path = "/status",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseDto<ProductDto> editProductStatus(@RequestBody ProductDto productDto) {
+    public ResponseDto<ProductDto> editProductStatus(@Validated(ProductDto.UpdateProductStatusAction.class) @RequestBody ProductDto productDto) {
         return ResponseDto.ok(productService.editProductStatus(productDto));
     }
 
