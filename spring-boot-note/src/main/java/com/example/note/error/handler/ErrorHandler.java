@@ -5,6 +5,9 @@ import com.example.note.dto.ResponseDto;
 import com.example.note.enumeration.ReturnCode;
 import com.example.note.error.NoteException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 統一處理註釋@RestController 的控制器層所拋出的例外狀況
@@ -21,6 +25,9 @@ import java.util.List;
 @RestControllerAdvice(annotations = {RestController.class})
 @Slf4j
 public class ErrorHandler {
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * 處理MethodArgumentNotValidException 例外狀況
@@ -32,14 +39,18 @@ public class ErrorHandler {
     public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.info("MethodArgumentNotValidException occurred, Error argument:");
 
+        Locale locale = LocaleContextHolder.getLocale();
+
         BindingResult result = e.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
         fieldErrors.forEach(error -> {
-            log.info("{}: {}", error.getField(), error.getDefaultMessage());
+            log.info("{}: {}", error.getField(), messageSource.getMessage(error.getDefaultMessage(), null, locale));
         });
 
+        String message = messageSource.getMessage(fieldErrors.get(0).getDefaultMessage(), null, locale);
+
         return ResponseEntity.badRequest()
-                .body(ResponseDto.of(ReturnCode.VALID_ERROR, fieldErrors.get(0).getDefaultMessage(), null));
+                .body(ResponseDto.of(ReturnCode.VALID_ERROR, message, null));
     }
 
     /**
@@ -50,11 +61,13 @@ public class ErrorHandler {
      */
     @ExceptionHandler(NoteException.class)
     public ResponseEntity<ResponseDto> handleNoteException(NoteException e) {
+        String message = messageSource.getMessage(e.getReturnCode().getMsg(), null, LocaleContextHolder.getLocale());
+
         log.error("NoteException occurred, Error code : {}, Error message: {}",
-                e.getReturnCode().getCode(), e.getReturnCode().getMsg());
+                e.getReturnCode().getCode(), message);
 
         return ResponseEntity.badRequest()
-                .body(ResponseDto.error(e.getReturnCode()));
+                .body(ResponseDto.of(e.getReturnCode(), message, null));
     }
 
     /**
@@ -67,8 +80,10 @@ public class ErrorHandler {
     public ResponseEntity<ResponseDto> handleException(Exception e) {
         log.error("Exception occurred, Error stack: ", e);
 
+        String message = messageSource.getMessage(ReturnCode.ERROR.getMsg(), null, LocaleContextHolder.getLocale());
+
         return ResponseEntity.badRequest()
-                .body(ResponseDto.error(ReturnCode.ERROR));
+                .body(ResponseDto.of(ReturnCode.ERROR, message, null));
     }
 
 }

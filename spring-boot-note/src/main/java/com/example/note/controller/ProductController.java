@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/product")
-public class ProductController {
+public class ProductController extends BaseController {
 
     @Autowired
     private ProductService productService;
@@ -24,7 +24,7 @@ public class ProductController {
      */
     @GetMapping
     public ResponseDto<List<ProductDto>> getAllProduct() {
-        return ResponseDto.ok(productService.getAllProduct());
+        return super.ok(productService.getAllProduct());
     }
 
     /**
@@ -35,7 +35,7 @@ public class ProductController {
      */
     @GetMapping(path = "/{name}")
     public ResponseDto<ProductDto> getProductByName(@PathVariable(name = "name") String name) {
-        return ResponseDto.ok(productService.getProductByName(name));
+        return super.ok(productService.getProductByName(name));
     }
 
     /**
@@ -46,7 +46,7 @@ public class ProductController {
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseDto<ProductDto> addProduct(@Validated(ProductDto.CreateProductAction.class) @RequestBody ProductDto productDto) {
-        return ResponseDto.ok(productService.addProduct(productDto));
+        return super.ok(productService.addProduct(productDto));
     }
 
     /**
@@ -57,7 +57,7 @@ public class ProductController {
      */
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseDto<ProductDto> editProduct(@Validated(ProductDto.UpdateProductAction.class) @RequestBody ProductDto productDto) {
-        return ResponseDto.ok(productService.editProduct(productDto));
+        return super.ok(productService.editProduct(productDto));
     }
 
     /**
@@ -70,7 +70,7 @@ public class ProductController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseDto<ProductDto> editProductStock(@Validated(ProductDto.UpdateProductStockAction.class) @RequestBody ProductDto productDto) {
-        return ResponseDto.ok(productService.editProductStock(productDto));
+        return super.ok(productService.editProductStock(productDto));
     }
 
     /**
@@ -83,7 +83,7 @@ public class ProductController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseDto<ProductDto> editProductStatus(@Validated(ProductDto.UpdateProductStatusAction.class) @RequestBody ProductDto productDto) {
-        return ResponseDto.ok(productService.editProductStatus(productDto));
+        return super.ok(productService.editProductStatus(productDto));
     }
 
     /**
@@ -95,7 +95,7 @@ public class ProductController {
     public ResponseDto removeProduct(@PathVariable(name = "name") String name) {
         productService.removeProduct(name);
 
-        return ResponseDto.ok(null);
+        return super.ok(null);
     }
 
 }

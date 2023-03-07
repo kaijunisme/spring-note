@@ -1,5 +1,6 @@
 package com.example.note.dto;
 
+import com.example.note.constant.MessageConst;
 import com.example.note.po.ProductPo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -18,21 +19,27 @@ public class ProductDto {
     /**
      * 名稱
      */
-    @NotBlank(message = "產品名稱不可為空")
+    @NotBlank(message = MessageConst.PRODUCT_NAME_NOT_BLANK)
     private String name;
 
     /**
      * 售價
      */
-    @NotNull(groups = CreateProductAction.class, message = "產品售價不可為空")
-    @Min(groups = {CreateProductAction.class, UpdateProductAction.class}, value = 1, message = "產品售價最小值為1元")
+    @NotNull(groups = CreateProductAction.class,
+            message = MessageConst.PRODUCT_PRICE_NOT_NULL)
+    @Min(groups = {CreateProductAction.class, UpdateProductAction.class},
+            value = 1,
+            message = MessageConst.PRODUCT_PRICE_MIN)
     private Integer price;
 
     /**
      * 庫存
      */
-    @NotNull(groups = CreateProductAction.class, message = "產品庫存不可為空")
-    @Min(groups = {CreateProductAction.class, UpdateProductAction.class, UpdateProductStockAction.class}, value = 0, message = "產品庫存最小值為0個")
+    @NotNull(groups = CreateProductAction.class,
+            message = MessageConst.PRODUCT_STOCK_NOT_NULL)
+    @Min(groups = {CreateProductAction.class, UpdateProductAction.class, UpdateProductStockAction.class},
+            value = 0,
+            message = MessageConst.PRODUCT_STOCK_MIN)
     private Integer stock;
 
     /**
@@ -40,8 +47,11 @@ public class ProductDto {
      * Y: 販售
      * N: 停售
      */
-    @NotBlank(groups = CreateProductAction.class, message = "產品狀態不可為空")
-    @Pattern(groups = {CreateProductAction.class, UpdateProductAction.class, UpdateProductStatusAction.class}, regexp = "^Y|N$", message = "產品狀態僅可為Y或N")
+    @NotBlank(groups = CreateProductAction.class,
+            message = MessageConst.PRODUCT_STATUS_NOT_BLANK)
+    @Pattern(groups = {CreateProductAction.class, UpdateProductAction.class, UpdateProductStatusAction.class},
+            regexp = "^Y|N$",
+            message = MessageConst.PRODUCT_STATUS_PATTERN)
     private String status;
 
     /**
