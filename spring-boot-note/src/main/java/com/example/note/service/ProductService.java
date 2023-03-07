@@ -6,6 +6,10 @@ import com.example.note.error.NoteException;
 import com.example.note.po.ProductPo;
 import com.example.note.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -15,7 +19,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.example.note.constant.CacheConst.CACHE_NAME_PRODUCT_CACHE;
+
 @Service
+@CacheConfig(cacheNames = CACHE_NAME_PRODUCT_CACHE)
 public class ProductService {
 
     @Autowired
@@ -27,6 +34,7 @@ public class ProductService {
      * @return
      */
     @Transactional(readOnly = true)
+    @Cacheable(key = "#root.methodName")
     public List<ProductDto> getAllProduct() {
         return productRepository.findAll().stream()
                 .map(ProductDto::createByPo)
@@ -40,6 +48,7 @@ public class ProductService {
      * @return
      */
     @Transactional(readOnly = true)
+    @Cacheable(key = "#name")
     public ProductDto getProductByName(final String name) {
         return productRepository.findByName(name)
                 .map(ProductDto::createByPo)
@@ -53,6 +62,7 @@ public class ProductService {
      * @return
      */
     @Transactional
+    @CachePut(key = "#productDto.name")
     public ProductDto addProduct(ProductDto productDto) {
         if (productRepository.findByName(productDto.getName()).isPresent())
             throw new NoteException(ReturnCode.PRODUCT_NAME_DUPLICATE);
@@ -68,6 +78,7 @@ public class ProductService {
      * @return
      */
     @Transactional
+    @CachePut(key = "#result.name")
     public ProductDto editProduct(ProductDto productDto) {
         return this.updateProduct(
                 () -> {
@@ -94,6 +105,7 @@ public class ProductService {
      * @return
      */
     @Transactional
+    @CachePut(key = "#result.name")
     public ProductDto editProductStock(ProductDto productDto) {
         return this.updateProduct(
                 () -> {
@@ -114,6 +126,7 @@ public class ProductService {
      * @return
      */
     @Transactional
+    @CachePut(key = "#result.name")
     public ProductDto editProductStatus(ProductDto productDto) {
         return this.updateProduct(
                 () -> {
@@ -148,6 +161,7 @@ public class ProductService {
      * @param name
      */
     @Transactional
+    @CacheEvict(key = "#name")
     public void removeProduct(final String name) {
         if (productRepository.findByName(name).isEmpty())
             throw new NoteException(ReturnCode.PRODUCT_NOT_FOUND);

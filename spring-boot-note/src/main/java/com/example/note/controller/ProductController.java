@@ -92,10 +92,8 @@ public class ProductController extends BaseController {
      * @param name
      */
     @DeleteMapping(path = "/{name}")
-    public ResponseDto removeProduct(@PathVariable(name = "name") String name) {
+    public void removeProduct(@PathVariable(name = "name") String name) {
         productService.removeProduct(name);
-
-        return super.ok(null);
     }
 
 }
